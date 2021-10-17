@@ -1,13 +1,13 @@
-#pragma once
+п»ї#pragma once
 #include <string>
 #include <vector>
 using namespace std;
 
-class Bad_range : public exception // создаем класс ошибок, наследуясь от встроенного класса exception
+class Bad_range : public exception // СЃРѕР·РґР°РµРј РєР»Р°СЃСЃ РѕС€РёР±РѕРє, РЅР°СЃР»РµРґСѓСЏСЃСЊ РѕС‚ РІСЃС‚СЂРѕРµРЅРЅРѕРіРѕ РєР»Р°СЃСЃР° exception
 {
 public:
 	virtual const char* what() const noexcept override
 	{
-		return "ERROR: bad range array"; // отображается на экране при получении исключения
+		return "ERROR: bad range array"; // РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РЅР° СЌРєСЂР°РЅРµ РїСЂРё РїРѕР»СѓС‡РµРЅРёРё РёСЃРєР»СЋС‡РµРЅРёСЏ
 	}
 };
