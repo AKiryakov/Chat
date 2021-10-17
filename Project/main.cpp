@@ -1,20 +1,26 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <windows.h>
+#include "Header.h"
 using namespace std;
 
 int main()
 {
-    setlocale(LC_ALL, "");
-    std::vector<string> name; // в векторе name храним имена зарегистрированных пользователей
-    std::vector<string> password; // в векторе password храним пароли пользователей, индексы name  и password совпадают
-    std::vector<string> sender_name;
-    std::vector<string> recipient_name;
-    std::vector<string> message;
+    setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
 
-    string user_name, user_password, user_confirm_password, current_message, current_reciption_name, flag_response;
-    int num, i, j;
-    bool authorization, name_free, sent_nosuccessfully;
+    vector<string> name; // в векторе "name" храним имена зарегистрированных пользователей
+    vector<string> password; // в векторе password храним пароли пользователей, индексы в "name" и "password" совпадают
+    vector<string> sender_name; // вектор с именами отправителей
+    vector<string> recipient_name; // вектор с именами получателей
+    vector<string> message; // вектор с текстом сообщений
+
+    string user_name, user_password, user_confirm_password, current_message, current_reciption_name, flag_response;// имя текущего пользователя, пароль, подтверждение, текст сообщения, имя получателя сообщения, переменная для определения кому отвечать
+
+    int num, i, j, k;
+    bool authorization, name_free, sent_nosuccessfully; // для логикифакта авторизации, свободного имени в чате, факта отправки сообщения.
     for (; ; )
     {
         cout << "выберете действие:" << endl;// основное меню
@@ -33,18 +39,20 @@ int main()
         case 1:
             cout << "Введите ваше имя" << endl;
             getline(cin, user_name);
-            if (name.size() == 0)
+            if (name.size() == 0) // если пользователь первый, то не проверяем на уникальность
             {
                 cout << "Придумайте Ваш пароль" << endl;
                 getline(cin, user_password);
+
+                // проверка совпадения паролей закомментирована на период отладки
 
                 //cout << "Повторите пароль еще раз" << endl;
                 //getline(cin, user_confirm_password);
 
                 //if (user_password == user_confirm_password)
                 //{
-                name.push_back(user_name);
-                password.push_back(user_password);
+                name.push_back(user_name); // вносим в вектор имя
+                password.push_back(user_password); // вносим в вектор пароль
                 cout << "Пользователь " << user_name << " зарегистрирован" << endl << endl;
                 //}
                 //else
@@ -52,29 +60,40 @@ int main()
                  //   cout << "Пароли не совпадают. Пользователь НЕ зарегистрирован" << endl << endl;
                 //}
             }
-            else
+            else // если в векторе имен есть хотя бы одна запись, проверяем следующих пользователей на уникальность
             {
                 name_free = true;
-                for (i = 0; i < name.size(); ++i)
+                try // на самом деле не работает (при попытке выйти за предел длины вектора, например "i = name.size()" срабытывает исключение из вектора)
                 {
-                    if (user_name == name[i])
+                    for (i = 0; i < name.size(); ++i)
                     {
-                        name_free = false;
-                        break;
+                        if (user_name == name[i])
+                        {
+                            name_free = false;
+                            break;
+                        }
                     }
                 }
-                if (name_free)
+
+                catch (exception& error) // отработка пойманных исключений
+                {
+                    cout << error.what();
+                }
+
+
+                if (name_free) // если имя совободно, то приступаем к вводу пароля
                 {
                     cout << "Придумайте Ваш пароль" << endl;
                     getline(cin, user_password);
 
+                    // проверка совпадения паролей закомментирована на период отладки
                     //cout << "Повторите пароль еще раз" << endl;
                     //getline(cin, user_confirm_password);
 
                     //if (user_password == user_confirm_password)
                     //{
-                    name.push_back(user_name);
-                    password.push_back(user_password);
+                    name.push_back(user_name); // добавляем нового пользователя в вектор
+                    password.push_back(user_password); // добавляем пароль нового пользователя в вектор
                     cout << "Пользователь " << user_name << " зарегистрирован" << endl << endl;
                     break;
                     //}
@@ -90,6 +109,7 @@ int main()
             }
             break;
         case 2:
+            // авторизация
             cout << "Введите Ваше имя:" << endl;
             getline(cin, user_name);
 
@@ -97,16 +117,16 @@ int main()
             getline(cin, user_password);
 
             authorization = false;
-            for (i = 0; i < name.size(); ++i)
+            for (i = 0; i < name.size(); ++i) // перебираем введенные имя и пароль в векторах
             {
-                if (user_name == name[i] && user_password == password[i])
+                if (user_name == name[i] && user_password == password[i]) // если нашли соответствие авторизация прошла
                 {
-                    cout << "Добро пожаловать " << user_name << endl;
-                    authorization = true;
+                    cout << "Добро пожаловать " << user_name << endl << endl;
+                    authorization = true; //если имя и пароль верные, переменная authorization = true
                     break;
                 }
             }
-            if (authorization)
+            if (authorization) // при удачной авторизации получаем доступ к отправке и получению сообщений.
             {
 
                 for (;;)
@@ -125,14 +145,12 @@ int main()
                     }
                     switch (num) // выбор действий через оператор switch
                     {
-                    case 1:
+                    case 1: // отправка сообщений всем пользователям
                         cout << "введите сообщение" << endl;
                         getline(cin, current_message);
-
-
-                        for (i = 0; i < name.size(); ++i)
+                        for (i = 0; i < name.size(); ++i) // перебираем вектор имен
                         {
-                            if (user_name != name[i])
+                            if (user_name != name[i]) // записываем во все вектора (отправитель, получатель, текст) значения, кроме случая равенства имени текущего пользователя и пользователя из вектора имен (чтобы не отправлять сообщение самому себе)
                             {
                                 sender_name.push_back(user_name);
                                 recipient_name.push_back(name[i]);
@@ -143,48 +161,49 @@ int main()
 
                         break;
                     case 2:
-                        sent_nosuccessfully = 1;
-                        cout << "Сейчас в чате зарегистрированы:" << endl;
+                        // отправка сообщения конкретному пользователю
+                        sent_nosuccessfully = 1; // значение переменной будет истина, пока пользователь не введет правильно имя получателя
+                        cout << "Сейчас в чате зарегистрированы:" << endl; // отображаем список зарегистрированных пользователей
                         for (i = 0; i < name.size(); ++i)
                         {
                             cout << name[i] << "; ";
                         }
-                        while (sent_nosuccessfully)
+                        while (sent_nosuccessfully) // бесконечный цикл, пока не введем точное имя получателя
                         {
                             cout << endl << "кому отправляем сообщение?" << endl;
                             getline(cin, current_reciption_name);
 
-                            for (i = 0; i < name.size(); ++i)
+                            for (i = 0; i < name.size(); ++i) // перебираем введенное имя среди зарегистрированных пользователей
                             {
-                                if (current_reciption_name == name[i])
+                                if (current_reciption_name == name[i]) // если находим, просим ввести текст сообщения
                                 {
                                     cout << "введите сообщение" << endl;
                                     getline(cin, current_message);
 
-                                    sender_name.push_back(user_name);
+                                    sender_name.push_back(user_name); // записываем сообщение в вектора отправителя, получателя, сам текст
                                     recipient_name.push_back(current_reciption_name);
                                     message.push_back("Вам сообщение от " + user_name + ": " + current_message);
                                     cout << "Ваше сообщение отправлено" << endl << endl;
-                                    sent_nosuccessfully = 0;
+                                    sent_nosuccessfully = 0; // устанавливаем флаг в положение "сообщение отправлено"
                                 }
                             }
-                            if (sent_nosuccessfully)
+                            if (sent_nosuccessfully) // если имя получателя в списке не нашли, сообщаем об этом
                             {
                                 cout << "пользователь с именем " << current_reciption_name << " в чате не зарегистрирован" << endl << endl;
                             }
                         }
                         break;
 
-                    case 3:
+                    case 3: // получаем сообщения
                         j = message.size();
                         for (i = 0; i < j; ++i)
                         {
-                            if (user_name == recipient_name[i])
+                            if (user_name == recipient_name[i]) // если находим свое имя в векторе получателей, 
                             {
-                                cout << message[i] << endl;
-                                cout << "Если хотите ответить пользователю " << sender_name[i] << " нажмите 'y'" << endl;
-                                cin >> flag_response;
-                                if (flag_response == "y")
+                                cout << message[i] << endl; // выводим на экран сообщение
+                                cout << "Для ответа пользователю '" << sender_name[i] << "' лично нажмите 'л', для ответа в общий чат нажмите 'в'" << endl; // предлагаем ответить лично или всем
+                                cin >> flag_response; // вводим с клавиатуры, если:
+                                if (flag_response == "л") // "л" - отпраляем личный ответ
                                 {
                                     cin.ignore();
                                     cout << "введите текст сообщения:" << endl;
@@ -193,14 +212,28 @@ int main()
                                     recipient_name.push_back(sender_name[i]);
                                     message.push_back("Вам сообщение от " + user_name + ": " + current_message);
                                     cout << "Ваше сообщение отправлено" << endl << endl;
-
                                 }
-
-                                message.erase(message.begin() + i);
-                                sender_name.erase(sender_name.begin() + i);
-                                recipient_name.erase(recipient_name.begin() + i);
-                                --j;
-                                --i;
+                                if (flag_response == "в") // если "в" - то отвечаем всем
+                                {
+                                    cin.ignore();
+                                    cout << "введите текст сообщения:" << endl;
+                                    getline(cin, current_message);
+                                    for (k = 0; k < name.size(); ++k)
+                                    {
+                                        if (user_name != name[k])
+                                        {
+                                            sender_name.push_back(user_name);
+                                            recipient_name.push_back(name[k]);
+                                            message.push_back("сообщение всем от " + user_name + ": " + current_message);
+                                        }
+                                    }
+                                    cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
+                                }
+                                message.erase(message.begin() + i); // удаляем из вектора прочитанное сообщение
+                                sender_name.erase(sender_name.begin() + i); // удаляем из вектора имя отправителя
+                                recipient_name.erase(recipient_name.begin() + i); // удаляем из вектора имя получателя
+                                --j; // длина векторов стала меньше на 1, соответственно уменьшаем на 1 количество проходов
+                                --i; // мы только что удалили текущие значения в векторах имя, отправитель, получатель, значит с этим же индексом хранится уже новое сообщение, его будем проверять на следующем проходе
                             }
                         }
 
@@ -221,58 +254,6 @@ int main()
                         break;
                     }
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                // тут продалжаем писать программу. По моей задумке, после успешной авторизации должно появиться меню:
-                                // 1. Отправить сообщение всем пользователям
-                                // 2. Отправить личное сообщение
-                                // 3. Получить сообщение
-                                // 0. Выход в предыдущее меню.
-
-                                // Анне предлагаю написать пункты 1 и 2.
-                                // 
-                                // Предлагаю создать еще 3 вектора (sender_name - в нем храним имя отправителя, recipient_name - в нем храним имя получателя и message - в нем храним текст сообщения, все вектора string)
-                                //Для отправки сообщения всем пользователям запускаем цикл от 0 до <name.size() - 1> (-1 чтобы не отправлять себе) (Анна, метод size() - возвращает размер вектора, т.е. количество занятых ячеек)
-                                //и в вектор <sender_name> записываем значенеи переменной <user_name> (в ней хранится значение авторизованного пользователя), в вектор <recipient_name> записываем значение вектора <name> (тут вставляем условие
-                                //, что если значение name[] = user_name, то не записываем значение, в вектор <messge> записываем текст сообщения, введенный пользователем с клавиатуры)
-
-                                //В меню "2. Отправить личное сообщение" должно быть 3 пункта:
-                                //1. Вывести на экран список зарегистрированных пользователей
-                                //2. Отправить сообщение
-                                //0. Выход в предыдущее меню.
-                                //по первому действию выводим на экран значение ветора <name>
-                                //по второму вводим с экрана имя, проверяем наличие этого имени в векторе <name>, если находим, то записываем в вектора <sender_name> <recipient_name> <message> соответствующие значения (отправитель, получатель, тьекст)
-                                //если не находимя, выводим на экран, что пользователь не найден, введите имя снова
-
-                                //Андрей, тебе предлагаю написать код для получения сообщений.
-                                //ищем в векторе <recipient_name> свое имя, которое хранится в <user_name> и если находим, то сообщаем, что вам сообщение от пользователя, выводим значенеи <sender_name> и само <message>
-                                //после вывода сообщения, нужно удалить значения из вектров <sender_name>, <recipient_name> и <message> и уменьшить на один количество проходов в цикле.
-                                //по условию после получения сообщения должна появиться возможность ответа - нужно предусмотреть
-                                //продолжаем просмотр вектора <recipient_name> - если находим свое имя - выводим сообщение, удаляем, спрашиваем о необходимости ответа и так до конца вектора.
-
-
-
-
             }
             else
             {
