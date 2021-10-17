@@ -10,13 +10,13 @@ public:
 	~Message() = default;
 
 	void setMessage(string message);
-	string getMessage();
+	string getMessage() const;
 
 	void setSender(string sender);
-	string getSender();
+	string getSender() const;
 
 	void setRecinient(string recinient);
-	string getRecinient();
+	string getRecinient() const;
 
 
 private:

@@ -10,9 +10,9 @@ public:
 	~User() = default;
 
 	void setUserLogin(string login);
-	string getUserLogin();
+	string getUserLogin() const;
 	void setUserPassword(string password);
-	string getUserPassword();
+	string getUserPassword() const;
 
 private:
 	string _login;

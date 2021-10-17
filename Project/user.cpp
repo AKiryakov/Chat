@@ -4,7 +4,7 @@
 #include "User.h"
 using namespace std;
 
-string User::getUserLogin()
+string User::getUserLogin() const
 {
 	return _login;
 }
@@ -14,7 +14,7 @@ void User::setUserLogin(string login)
 	_login = login;
 }
 
-string User::getUserPassword()
+string User::getUserPassword() const
 {
 	return _password;
 }
