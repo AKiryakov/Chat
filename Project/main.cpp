@@ -211,7 +211,7 @@ int main()
                     break;
 
                 default:
-                    if ((num > 3) | (num < 1)) // условие выхода в предыдущее меню
+                    if ((num > 3) || (num < 1)) // условие выхода в предыдущее меню
                     {
                         authorization = false;
                     }
@@ -221,7 +221,7 @@ int main()
             break;
 
         default:
-            if ((num > 2) | (num < 1)) // условие выхода из программы
+            if ((num > 2) || (num < 1)) // условие выхода из программы
             {
                 finish_program = 0;
             }
