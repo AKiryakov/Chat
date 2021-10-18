@@ -1,7 +1,7 @@
 ﻿#include <string>
 #include <iostream>
 #include <vector>
-#include "Message.h"
+#include "message.h"
 using namespace std;
 
 string Message::getMessage() const

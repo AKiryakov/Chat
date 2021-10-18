@@ -24,6 +24,12 @@
     <ClCompile Include="user.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="funk_user.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="funk_message.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="user.h">
@@ -33,6 +39,12 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="exception.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="funk_user.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="funk_message.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

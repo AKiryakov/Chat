@@ -5,7 +5,8 @@
 #include "user.h"
 #include "message.h"
 #include "exception.h"
-
+#include "funk_message.h"
+#include "funk_user.h"
 using namespace std;
 
 int main()
@@ -13,26 +14,23 @@ int main()
     setlocale(LC_ALL, "Russian");
     SetConsoleOutputCP(1251);
     SetConsoleCP(1251);
-    vector<User> Users_Vector_Class;
-    vector<Message> Message_Vector_Class;
+    vector<User> Users_Vector_Class; // создаем вектор пользователей класса User
+    vector<Message> Message_Vector_Class; // создаем вектор сообщений класса Message
     string user_login, user_password, user_confirm_password, current_message, current_reciption_name, flag_response;// имя текущего пользователя, пароль, подтверждение, текст сообщения, имя получателя сообщения, переменная для определения кому отвечать
-
-    int num, i, j, k;
+    int num, i, j, k; // переменные для меню и циклов 
     bool authorization, name_free, sent_nosuccessfully, finish_program = 1; // для логики факта авторизации, свободного имени в чате, факта отправки сообщения, завершения программы
     while (finish_program) //бесконечный цикл пока finish_program = true 
     {
         cout << "выберете действие:" << endl;// основное меню
         cout << "1. Регистрация пользователя" << endl;
         cout << "2. Авторизация пользователя и работа в чате" << endl;
-        //cout << "3. Показать пользователи и пароли" << endl; // это на время отладки, в финальной версии удалим
         cout << "Для выхода из программы нажмите любую другую кнопку" << endl << endl;
         cin >> num;
         cin.ignore();
-
         switch (num) // выбор действий через оператор switch
         {
         case 1:
-            cout << "Введите ваше имя" << endl;
+            cout << "Введите ваш логин" << endl;
             getline(cin, user_login);
             if (Users_Vector_Class.size() == 0) // если пользователь первый, то не проверяем на уникальность
             {
@@ -43,12 +41,7 @@ int main()
 
                 if (user_password == user_confirm_password) // если пароли совпадают
                 {
-                    Users_Vector_Class.push_back(User()); // добавляем новый объект User в вектор
-                    Users_Vector_Class[0].setUserLogin(user_login); // логин нового пользователя
-                    Users_Vector_Class[0].setUserPassword(user_password); // пароль нового пользователя
-
-
-                    cout << "Пользователь " << user_login << " зарегистрирован" << endl << endl;
+                    funk_registr_user(Users_Vector_Class, user_login, user_password); //вызываем фунцию регистрации пользователя
                 }
                 else
                 {
@@ -58,21 +51,13 @@ int main()
             else // если в векторе User есть хотя бы одна запись, проверяем следующих пользователей на уникальность
             {
                 name_free = true;
-                try 
+                for (i = 0; i < Users_Vector_Class.size(); ++i) // просматриваем все зарегистрированные логины
                 {
-                    for (i = 0; i < Users_Vector_Class.size(); ++i) // просматриваем все зарегистрированные логины
-                    {
-                        if (user_login == Users_Vector_Class[i].getUserLogin()) // если находим
-                        {
-                            name_free = false; // выставляем name_free = false
-                            break;
-                        }
-                    }
-                }
-
-                catch (exception& error) // отработка пойманных исключений
-                {
-                    cout << error.what();
+                   if (user_login == Users_Vector_Class[i].getUserLogin()) // если находим
+                   {
+                        name_free = false; // выставляем name_free = false
+                        break;
+                   }
                 }
 
                 if (name_free) // если имя совободно, то приступаем к вводу пароля
@@ -81,15 +66,9 @@ int main()
                     getline(cin, user_password);
                     cout << "Повторите пароль еще раз" << endl;
                     getline(cin, user_confirm_password);
-
                     if (user_password == user_confirm_password) // если пароли совпадают
                     {
-
-                        Users_Vector_Class.push_back(User()); // добавляем новый объект User в вектор
-                        Users_Vector_Class[Users_Vector_Class.size() - 1].setUserLogin(user_login); // логин нового пользователя
-                        Users_Vector_Class[Users_Vector_Class.size() - 1].setUserPassword(user_password); // пароль нового пользователя
-
-                        cout << "Пользователь " << user_login << " зарегистрирован" << endl << endl;
+                        funk_registr_user(Users_Vector_Class, user_login, user_password); //вызываем фунцию регистрации пользователя
                         break;
                     }
                     else
@@ -99,7 +78,7 @@ int main()
                 }
                 else
                 {
-                    cout << "Имя уже используется, придумайте другое" << endl << endl;
+                    cout << "Логин уже используется, придумайте другой" << endl << endl;
                 }
             }
             break;
@@ -111,9 +90,8 @@ int main()
             }
 
             // авторизация
-            cout << "Введите Ваше имя:" << endl;
+            cout << "Введите Ваш логин:" << endl;
             getline(cin, user_login);
-
             cout << "Введите Ваш пароль:" << endl;
             getline(cin, user_password);
 
@@ -137,7 +115,6 @@ int main()
                 cout << "1. Отправить сообщение всем пользователям" << endl;
                 cout << "2. Отправить личное сообщение" << endl;
                 cout << "3. Получить сообщение" << endl; // 
-                //cout << "4. показать вектора" << endl; //
                 cout << "Для выхода в предыдущее меню нажмите любую другую кнопку" << endl << endl;
                 cin >> num;
                 cin.ignore();
@@ -148,18 +125,14 @@ int main()
                     getline(cin, current_message);
                     for (i = 0; i < Users_Vector_Class.size(); ++i) // перебираем вектор User
                     {
-                        if (user_login != Users_Vector_Class[i].getUserLogin()) // добавляем новый объект Message с полями отправитель, получатель, текст, кроме случая равенства имени текущего пользователя и пользователя из вектора User (чтобы не отправлять сообщение самому себе)
+                        if (user_login != Users_Vector_Class[i].getUserLogin()) // для рассылки всем, кроме случая равенства имени текущего пользователя и пользователя из вектора User (чтобы не отправлять сообщение самому себе)
                         {
-                            Message_Vector_Class.push_back(Message());
-                            int a = Message_Vector_Class.size() - 1;
-                            Message_Vector_Class[a].setSender(user_login);
-                            Message_Vector_Class[a].setRecinient(Users_Vector_Class[i].getUserLogin());
-                            Message_Vector_Class[a].setMessage("сообщение всем от " + user_login + ": " + current_message);
+                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[i].getUserLogin(), current_message, 0); // вызываем функцию отправки собщений, передавая в неё объект класса Message, отправителя, получателя, текст, флаг отправки личных/общих сообщений
                         }
                     }
                     cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
-
                     break;
+
                 case 2:
                     // отправка сообщения конкретному пользователю
                     sent_nosuccessfully = true; // значение переменной будет истина, пока пользователь не введет правильно имя получателя
@@ -179,12 +152,7 @@ int main()
                             {
                                 cout << "введите сообщение" << endl;
                                 getline(cin, current_message);
-                                Message_Vector_Class.push_back(Message()); // добавляем новый объект Message
-                                int a = Message_Vector_Class.size() - 1;
-                                Message_Vector_Class[a].setSender(user_login); //отправитель
-                                Message_Vector_Class[a].setRecinient(current_reciption_name); // получатель
-                                Message_Vector_Class[a].setMessage("Вам сообщение от " + user_login + ": " + current_message); // текст сообщения
-                                cout << "Ваше сообщение отправлено" << endl << endl;
+                                funk_sent_message(Message_Vector_Class, user_login, current_reciption_name, current_message, 1);
                                 sent_nosuccessfully = 0; // устанавливаем флаг в положение "сообщение отправлено"
                             }
                         }
@@ -197,80 +165,61 @@ int main()
 
                 case 3: // получаем сообщения
                     j = Message_Vector_Class.size();
-                    for (i = 0; i < j; ++i)
+                    try
                     {
-                        if (user_login == Message_Vector_Class[i].getRecinient()) // если находим свое имя в векторе Message в поле получатель, 
+                        for (i = 0; i < j; ++i)
                         {
-                            cout << Message_Vector_Class[i].getMessage() << endl; // выводим на экран сообщение
-                            cout << "Для ответа пользователю '" << Message_Vector_Class[i].getSender() << "' лично нажмите 'л', для ответа в общий чат нажмите 'в'" << endl; // предлагаем ответить лично или всем
-                            cin >> flag_response; // вводим с клавиатуры, если:
-                            if (flag_response == "л") // "л" - отпраляем личный ответ
+                            if (user_login == Message_Vector_Class[i].getRecinient()) // если находим свое имя в векторе Message в поле получатель, 
                             {
-                                cin.ignore();
-                                cout << "введите текст сообщения:" << endl;
-                                getline(cin, current_message);
-                                Message_Vector_Class.push_back(Message()); // отправляем личное сообщение аналогично, как ранее
-                                int a = Message_Vector_Class.size() - 1;
-                                Message_Vector_Class[a].setSender(user_login);
-                                Message_Vector_Class[a].setRecinient(Message_Vector_Class[i].getSender());
-                                Message_Vector_Class[a].setMessage("Вам сообщение от " + user_login + ": " + current_message);
-                                cout << "Ваше сообщение отправлено" << endl << endl;
-                            }
-                            if (flag_response == "в") // если "в" - то отвечаем всем
-                            {
-                                cin.ignore();
-                                cout << "введите текст сообщения:" << endl;
-                                getline(cin, current_message);
-                                for (k = 0; k < Users_Vector_Class.size(); ++k) //отправляем всем сообщение аналогично, как ранее
+                                cout << Message_Vector_Class[i].getMessage() << endl; // выводим на экран сообщение
+                                cout << "Для ответа пользователю '" << Message_Vector_Class[i].getSender() << "' лично нажмите 'л', для ответа в общий чат нажмите 'в'" << endl; // предлагаем ответить лично или всем
+                                cin >> flag_response; // вводим с клавиатуры, если:
+                                if (flag_response == "л") // "л" - отпраляем личный ответ
                                 {
-                                    if (user_login != Users_Vector_Class[k].getUserLogin())
-                                    {
-
-                                        Message_Vector_Class.push_back(Message());
-                                        int a = Message_Vector_Class.size() - 1;
-                                        Message_Vector_Class[a].setSender(user_login);
-                                        Message_Vector_Class[a].setRecinient(Users_Vector_Class[k].getUserLogin());
-                                        Message_Vector_Class[a].setMessage("сообщение всем от " + user_login + ": " + current_message);
-                                    }
+                                    cin.ignore();
+                                    cout << "введите текст сообщения:" << endl;
+                                    getline(cin, current_message);
+                                    funk_sent_message(Message_Vector_Class, user_login, Message_Vector_Class[i].getSender(), current_message, 1); //вызываем функцию отправки собщений, передавая в неё объект класса Message, отправителя, получателя, текст, флаг отправки личных/общих сообщений
                                 }
-                                cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
+                                if (flag_response == "в") // если "в" - то отвечаем всем
+                                {
+                                    cin.ignore();
+                                    cout << "введите текст сообщения:" << endl;
+                                    getline(cin, current_message);
+                                    for (k = 0; k < Users_Vector_Class.size(); ++k) //отправляем всем сообщение аналогично, как ранее
+                                    {
+                                        if (user_login != Users_Vector_Class[k].getUserLogin())
+                                        {
+                                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[k].getUserLogin(), current_message, 0);
+                                        }
+                                    }
+                                    cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
+                                }
+                                Message_Vector_Class.erase(Message_Vector_Class.begin() + i); // удаляем из вектора Message объект с прочитанным сообщением
+                                --j; // длина векторов стала меньше на 1, соответственно уменьшаем на 1 количество проходов
+                                --i; // мы только что удалили текущие значения в векторе Message, значит с этим же индексом хранится уже новое сообщение, его будем проверять на следующем проходе
                             }
-                            Message_Vector_Class.erase(Message_Vector_Class.begin() + i); // удаляем из вектора Message объект с прочитанным сообщением
-                            --j; // длина векторов стала меньше на 1, соответственно уменьшаем на 1 количество проходов
-                            --i; // мы только что удалили текущие значения в векторе Message, значит с этим же индексом хранится уже новое сообщение, его будем проверять на следующем проходе
                         }
                     }
+
+                    catch (exception& error) // отработка пойманных исключений
+                    {
+                        cout << error.what();
+                    }
+                    
                     cout << "Входящих сообщений нет" << endl << endl;
                     break;
-                    //case 4: // для отладки
-                    //    for (i = 0; i < Message_Vector_Class.size(); ++i)
-                    //    {
-                    //        cout << "отправитель " << Message_Vector_Class[i].getSender() << endl;
-                    //        cout << "получатель " << Message_Vector_Class[i].getRecinient() << endl;
-                    //        cout << "сообщение: " << Message_Vector_Class[i].getMessage() << endl;
-
-                    //    }
-                    //    break;
 
                 default:
                     if ((num > 3) | (num < 1)) // условие выхода в предыдущее меню
                     {
                         authorization = false;
                     }
-
                     break;
                 }
             }
             break;
 
-            //case 3:
-            //    for (i = 0; i < Users_Vector_Class.size(); i++)
-            //    {
-            //        cout << Users_Vector_Class[i].getUserLogin() << endl;
-
-            //        cout << Users_Vector_Class[i].getUserPassword() << endl;
-            //    }
-            //    break;
         default:
             if ((num > 2) | (num < 1)) // условие выхода из программы
             {
@@ -281,3 +230,6 @@ int main()
     }
     return 0;
 }
+
+
+

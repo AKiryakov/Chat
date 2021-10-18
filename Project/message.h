@@ -20,7 +20,7 @@ public:
 
 
 private:
-	string _message;
-	string _sender;
-	string _recinient;
+	string _message; // текст сообщения
+	string _sender; // логин отправителя
+	string _recinient; // логин получателя
 };

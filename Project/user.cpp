@@ -1,7 +1,7 @@
 ﻿#include <string>
 #include <iostream>
 #include <vector>
-#include "User.h"
+#include "user.h"
 using namespace std;
 
 string User::getUserLogin() const

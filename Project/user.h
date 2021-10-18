@@ -15,6 +15,6 @@ public:
 	string getUserPassword() const;
 
 private:
-	string _login;
-	string _password;
+	string _login; // переменная с логином
+	string _password; // переменная с паролем
 };
