@@ -14,6 +14,16 @@ void User::setUserLogin(string login)
 	_login = login;
 }
 
+string User::getUserName() const
+{
+	return _name;
+}
+
+void User::setUserName(string name)
+{
+	_name = name;
+}
+
 string User::getUserPassword() const
 {
 	return _password;

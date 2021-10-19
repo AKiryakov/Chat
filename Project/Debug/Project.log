@@ -1,8 +1,8 @@
 ﻿  main.cpp
-C:\CPP\Chat\Project\main.cpp(54,31): warning C4018: <: несоответствие типов со знаком и без знака
-C:\CPP\Chat\Project\main.cpp(99,27): warning C4018: <: несоответствие типов со знаком и без знака
-C:\CPP\Chat\Project\main.cpp(126,35): warning C4018: <: несоответствие типов со знаком и без знака
-C:\CPP\Chat\Project\main.cpp(140,35): warning C4018: <: несоответствие типов со знаком и без знака
-C:\CPP\Chat\Project\main.cpp(149,39): warning C4018: <: несоответствие типов со знаком и без знака
-C:\CPP\Chat\Project\main.cpp(189,51): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(56,31): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(103,27): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(130,35): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(144,35): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(153,39): warning C4018: <: несоответствие типов со знаком и без знака
+C:\CPP\Chat\Project\main.cpp(193,51): warning C4018: <: несоответствие типов со знаком и без знака
   Project.vcxproj -> C:\CPP\Chat\Project\Debug\Project.exe

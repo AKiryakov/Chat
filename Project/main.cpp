@@ -16,7 +16,7 @@ int main()
     SetConsoleCP(1251);
     vector<User> Users_Vector_Class; // создаем вектор пользователей класса User
     vector<Message> Message_Vector_Class; // создаем вектор сообщений класса Message
-    string user_login, user_password, user_confirm_password, current_message, current_reciption_name, flag_response;// имя текущего пользователя, пароль, подтверждение, текст сообщения, имя получателя сообщения, переменная для определения кому отвечать
+    string user_login, user_name, user_password, user_confirm_password, current_message, current_reciption_name, flag_response;// имя текущего пользователя, пароль, подтверждение, текст сообщения, имя получателя сообщения, переменная для определения кому отвечать
     int num, i, j, k; // переменные для меню и циклов 
     bool authorization, name_free, sent_nosuccessfully, finish_program = 1; // для логики факта авторизации, свободного имени в чате, факта отправки сообщения, завершения программы
     while (finish_program) //бесконечный цикл пока finish_program = true 
@@ -34,6 +34,8 @@ int main()
             getline(cin, user_login);
             if (Users_Vector_Class.size() == 0) // если пользователь первый, то не проверяем на уникальность
             {
+                cout << "Введите Ваше имя" << endl;
+                getline(cin, user_name);
                 cout << "Придумайте Ваш пароль" << endl;
                 getline(cin, user_password);
                 cout << "Повторите пароль еще раз" << endl;
@@ -41,7 +43,7 @@ int main()
 
                 if (user_password == user_confirm_password) // если пароли совпадают
                 {
-                    funk_registr_user(Users_Vector_Class, user_login, user_password); //вызываем фунцию регистрации пользователя
+                    funk_registr_user(Users_Vector_Class, user_login, user_name, user_password); //вызываем фунцию регистрации пользователя
                 }
                 else
                 {
@@ -53,22 +55,24 @@ int main()
                 name_free = true;
                 for (i = 0; i < Users_Vector_Class.size(); ++i) // просматриваем все зарегистрированные логины
                 {
-                   if (user_login == Users_Vector_Class[i].getUserLogin()) // если находим
-                   {
+                    if (user_login == Users_Vector_Class[i].getUserLogin()) // если находим
+                    {
                         name_free = false; // выставляем name_free = false
                         break;
-                   }
+                    }
                 }
 
-                if (name_free) // если имя совободно, то приступаем к вводу пароля
+                if (name_free) // если имя совободно, то приступаем к вводу имени и пароля
                 {
+                    cout << "Введите Ваше имя" << endl;
+                    getline(cin, user_name);
                     cout << "Придумайте Ваш пароль" << endl;
                     getline(cin, user_password);
                     cout << "Повторите пароль еще раз" << endl;
                     getline(cin, user_confirm_password);
                     if (user_password == user_confirm_password) // если пароли совпадают
                     {
-                        funk_registr_user(Users_Vector_Class, user_login, user_password); //вызываем фунцию регистрации пользователя
+                        funk_registr_user(Users_Vector_Class, user_login, user_name, user_password); //вызываем фунцию регистрации пользователя
                         break;
                     }
                     else
@@ -100,14 +104,14 @@ int main()
             {
                 if (user_login == Users_Vector_Class[i].getUserLogin() && user_password == Users_Vector_Class[i].getUserPassword()) // если нашли соответствие авторизация прошла
                 {
-                    cout << "Добро пожаловать " << user_login << endl << endl;
+                    cout << "Добро пожаловать " << Users_Vector_Class[i].getUserName() << endl << endl;
                     authorization = true; //если имя и пароль верные, переменная authorization = true
                     break;
                 }
             }
             if (!authorization)
             {
-                cout << "Ошибка имени пользователя или пароля" << endl << endl;
+                cout << "Ошибка логина пользователя или пароля" << endl << endl;
             }
             while (authorization) // если авторизация прошла, показываем меню
             {
@@ -115,7 +119,7 @@ int main()
                 cout << "1. Отправить сообщение всем пользователям" << endl;
                 cout << "2. Отправить личное сообщение" << endl;
                 cout << "3. Получить сообщение" << endl; // 
-                cout << "Для выхода в предыдущее меню нажмите любую другую кнопку" << endl << endl;
+                cout << "Для выхода в предыдущее меню нажмите любую другую цифру, для выхода из программы любую букву" << endl << endl;
                 cin >> num;
                 cin.ignore();
                 switch (num) // выбор действий через оператор switch
@@ -206,7 +210,7 @@ int main()
                     {
                         cout << error.what();
                     }
-                    
+
                     cout << "Входящих сообщений нет" << endl << endl;
                     break;
 
@@ -230,6 +234,3 @@ int main()
     }
     return 0;
 }
-
-
-
