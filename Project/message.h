@@ -6,8 +6,12 @@ using namespace std;
 class Message
 {
 public:
-	Message() = default;
-	~Message() = default;
+	Message() = default; // конструктор по умолчанию
+	~Message() = default; // деструктор
+
+
+	Message (const string& login_user, const string& name_current_reciption, const string& message_current) : _sender(login_user), _recinient(name_current_reciption), _message(message_current) {} // конструктор с параметрами
+
 
 	void setMessage(string message);
 	string getMessage() const;
@@ -20,7 +24,7 @@ public:
 
 
 private:
-	string _message; // текст сообщения
 	string _sender; // логин отправителя
 	string _recinient; // логин получателя
+	string _message; // текст сообщения
 };

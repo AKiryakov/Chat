@@ -92,7 +92,6 @@ int main()
                 cout << "В чате зарегистрировано недостаточно пользователей для общения" << endl << endl;
                 break;
             }
-
             // авторизация
             cout << "Введите Ваш логин:" << endl;
             getline(cin, user_login);
@@ -127,11 +126,12 @@ int main()
                 case 1: // отправка сообщений всем пользователям
                     cout << "введите сообщение" << endl;
                     getline(cin, current_message);
+                    current_message = "сообщение всем от " + user_login + ": " + current_message;
                     for (i = 0; i < Users_Vector_Class.size(); ++i) // перебираем вектор User
                     {
                         if (user_login != Users_Vector_Class[i].getUserLogin()) // для рассылки всем, кроме случая равенства имени текущего пользователя и пользователя из вектора User (чтобы не отправлять сообщение самому себе)
                         {
-                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[i].getUserLogin(), current_message, 0); // вызываем функцию отправки собщений, передавая в неё объект класса Message, отправителя, получателя, текст, флаг отправки личных/общих сообщений
+                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[i].getUserLogin(), current_message); // вызываем функцию отправки собщений, передавая в неё объект класса Message, отправителя, получателя, текст
                         }
                     }
                     cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
@@ -156,7 +156,9 @@ int main()
                             {
                                 cout << "введите сообщение" << endl;
                                 getline(cin, current_message);
-                                funk_sent_message(Message_Vector_Class, user_login, current_reciption_name, current_message, 1);
+                                current_message = "Вам сообщение от " + user_login + ": " + current_message;
+                                funk_sent_message(Message_Vector_Class, user_login, current_reciption_name, current_message); // функция отправки сообщений
+                                cout << "Ваше сообщение отправлено" << endl << endl;
                                 sent_nosuccessfully = 0; // устанавливаем флаг в положение "сообщение отправлено"
                             }
                         }
@@ -176,25 +178,29 @@ int main()
                             if (user_login == Message_Vector_Class[i].getRecinient()) // если находим свое имя в векторе Message в поле получатель, 
                             {
                                 cout << Message_Vector_Class[i].getMessage() << endl; // выводим на экран сообщение
-                                cout << "Для ответа пользователю '" << Message_Vector_Class[i].getSender() << "' лично нажмите 'л', для ответа в общий чат нажмите 'в'" << endl; // предлагаем ответить лично или всем
+                                cout << "Для ответа пользователю '" << Message_Vector_Class[i].getSender() << "' лично нажмите 'л', для ответа в общий чат нажмите 'в', для получения остальных сообщений - любую кнопку" << endl; // предлагаем ответить лично или всем
                                 cin >> flag_response; // вводим с клавиатуры, если:
                                 if (flag_response == "л") // "л" - отпраляем личный ответ
                                 {
                                     cin.ignore();
                                     cout << "введите текст сообщения:" << endl;
                                     getline(cin, current_message);
-                                    funk_sent_message(Message_Vector_Class, user_login, Message_Vector_Class[i].getSender(), current_message, 1); //вызываем функцию отправки собщений, передавая в неё объект класса Message, отправителя, получателя, текст, флаг отправки личных/общих сообщений
+                                    current_message = "Вам сообщение от " + user_login + ": " + current_message;
+                                    funk_sent_message(Message_Vector_Class, user_login, Message_Vector_Class[i].getSender(), current_message); //вызываем функцию отправки собщений
+                                    cout << "Ваше сообщение отправлено" << endl << endl;
                                 }
                                 if (flag_response == "в") // если "в" - то отвечаем всем
                                 {
                                     cin.ignore();
                                     cout << "введите текст сообщения:" << endl;
                                     getline(cin, current_message);
+                                    current_message = "сообщение всем от " + user_login + ": " + current_message;
+
                                     for (k = 0; k < Users_Vector_Class.size(); ++k) //отправляем всем сообщение аналогично, как ранее
                                     {
                                         if (user_login != Users_Vector_Class[k].getUserLogin())
                                         {
-                                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[k].getUserLogin(), current_message, 0);
+                                            funk_sent_message(Message_Vector_Class, user_login, Users_Vector_Class[k].getUserLogin(), current_message); //вызываем функцию отправки собщений
                                         }
                                     }
                                     cout << "Сообщение отправлено всем зарегистрированным пользователям" << endl << endl;
