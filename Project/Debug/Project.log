@@ -1,5 +1,4 @@
-﻿  funk_message.cpp
-  funk_user.cpp
+﻿  funk_user.cpp
   main.cpp
 C:\CPP\Chat\Project\main.cpp(56,31): warning C4018: <: несоответствие типов со знаком и без знака
 C:\CPP\Chat\Project\main.cpp(102,27): warning C4018: <: несоответствие типов со знаком и без знака
@@ -7,7 +6,6 @@ C:\CPP\Chat\Project\main.cpp(130,35): warning C4018: <: несоответств
 C:\CPP\Chat\Project\main.cpp(144,35): warning C4018: <: несоответствие типов со знаком и без знака
 C:\CPP\Chat\Project\main.cpp(153,39): warning C4018: <: несоответствие типов со знаком и без знака
 C:\CPP\Chat\Project\main.cpp(199,51): warning C4018: <: несоответствие типов со знаком и без знака
-  message.cpp
   user.cpp
   Создание кода...
   Project.vcxproj -> C:\CPP\Chat\Project\Debug\Project.exe

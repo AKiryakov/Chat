@@ -11,12 +11,12 @@ public:
 
 	User(const string& login_user, const string& name_user, const string& password_user) : _login(login_user), _name(name_user), _password(password_user){} // конструктор с параметрами
 
-	void setUserLogin(string login);
-	string getUserLogin() const;
-	void setUserName(string name);
-	string getUserName() const;
-	void setUserPassword(string password);
-	string getUserPassword() const;
+	void setUserLogin(const string& login);
+	string &getUserLogin();
+	void setUserName(const string& name);
+	string &getUserName();
+	void setUserPassword(const string& password);
+	string &getUserPassword();
 
 private:
 	string _login; // переменная с логином
